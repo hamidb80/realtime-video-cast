@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>realtime video cast</title>
+
+    <script src="static/js/socket.io.js"></script>
+    <script src="static/js/vue.js"></script>
+    <script src="static/js/toastify.js"></script>
+
+    <link rel="stylesheet" href="static/css/toastify.min.css">
+    <link rel="stylesheet" href="static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+
+<body>
+
+    <div class="container" id="app">
+
+        <div v-if="is_offline" class="bg-danger w-100 card position-fixed nav text-center">
+            <span class="text-white">
+                Offline!
+            </span>
+        </div>
+
+        <div class="card text-left my-4">
+
+            <!-- register form -->
+            <div class="card-body" v-if="slide == 0">
+                <h4 class="card-title text-primary">Register form</h4>
+
+                <form class="form-group" @submit.prevent="send_username">
+                    <label>enter the user name:</label>
+                    <input type="text" class="form-control fs-medium" placeholder="username" v-model="username">
+                    <input type="submit" value="submit" class="btn btn-success mt-2">
+                </form>
+
+            </div>
+
+            <!-- for users -->
+            <div class="card-body" v-if="slide == 1">
+
+                <div v-if="!is_fullscreen">
+                    you are registred as
+                    <span class="badge badge-success"> [[ username ]] </span>
+                    <span class="badge badge-danger pointer" @click="logout"> logout </span>
+                </div>
+
+                <div id="video_container">
+                    <video id="video_player" :src="video_src" preload="auto" class="w-100" ref="video_player"
+                        @timeupdate="timeUpdate" @ended="set_zero">
+                    </video>
+
+                    <div class="progress pointer" @click="surfOnVideo" ref="progress">
+                        <div class="progress-bar progress-bar-striped bg-warning" ref="progress_bar">
+                        </div>
+                    </div>
+
+                    <div class="extant-time badge badge-warning">
+                        [[ clockify(extantTime) ]]
+                    </div>
+                </div>
+
+
+                <div class="form-group" v-if="is_admin">
+                    <label>enter the url of the video:</label>
+                    <input type="text" class="form-control fs-medium" placeholder="url" v-model="video_src"
+                        @blur="set_video_src" @keyup.up="changeSelectedIndex(-1)" @keyup.down="changeSelectedIndex(+1)"
+                        @keyup.enter="setVideoSrc" @keyup="getSuggestionFile" :disabled="is_play">
+                </div>
+
+                <div v-if="is_admin && nameSuggestion.length && !is_fullscreen" class="mb-3">
+                    <span> files in the ./public/ directory: </span>
+                    <ul class="list-group">
+                        <div v-for="(name, index) in nameSuggestion">
+                            <li v-if="selectedIndex == index"
+                                class="list-group-item d-flex justify-content-between align-items-center active">
+                                [[ name ]]
+                            </li>
+                            <li v-else class="list-group-item d-flex justify-content-between align-items-center">
+                                [[ name ]]
+                            </li>
+                        </div>
+                    </ul>
+                </div>
+
+                <!-- for ADMINs -->
+                <div v-if="is_admin" class="action-btns">
+
+                    <div class="video-controller">
+                        <button class="btn btn-outline-primary" @click="set_play">
+
+                            <div v-if="!is_play" class="btn-bg play-bg"></div>
+                            <div v-else class="btn-bg pause-bg"></div>
+
+                        </button>
+
+                        <button class="btn btn-outline-danger" @click="set_zero">
+                            <div class="btn-bg stop-bg"></div>
+                        </button>
+
+                        <button class="btn btn-outline-success" @click="set_fullscreen">
+                            <div v-if="is_fullscreen" class="btn-bg exit-fullscreen-bg"></div>
+                            <div v-else class="btn-bg enter-fullscreen-bg"></div>
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- show clients -->
+                <div v-if="is_admin" class="my-3 client-list">
+
+                    <h3>clients:</h3>
+
+                    <ul class="list-inline">
+                        <li class="list-inline-item my-1" v-for="client in clients">
+
+                            <span v-if="client.is_online" class="badge badge-success fs-medium">
+                                [[ client.username ]]
+                            </span>
+
+                            <span v-else class="badge badge-danger fs-medium">
+                                [[ client.username ]]
+                            </span>
+
+                        </li>
+
+                        <li class="list-inline-item my-1 count-clients">
+
+                            <span class="badge badge-info fs-medium">
+                                [[ onlineClients ]]
+                            </span>
+
+                        </li>
+                    </ul>
+
+                </div>
+
+                <!-- show clients -->
+                <a v-if="!is_admin && !is_fullscreen && video_src" :href="video_src" target="blank"
+                class="my-3 d-block btn btn-success text-white">
+                    donwload the video file
+                </a>
+
+
+            </div>
+        </div>
+
+
+    </div>
+</body>
+<script src="static/js/room.js"></script>
+
+</html>

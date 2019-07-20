@@ -1,0 +1,148 @@
+body.fullscreen, body.fullscreen .card, video{
+    background: black;
+}
+
+body.fullscreen video{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+body.fullscreen .action-btns{
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.fs-medium{
+    font-size: medium;
+}
+
+.small-input{
+    width: 60px;
+    background: transparent;
+    color: white !important;
+    height: inherit;
+    font-size: 18px;
+    padding: 0;
+}
+
+.video-controller{
+    background: #333;
+}
+
+.video-controller .btn{
+    width: 30px;
+    height: 30px;
+    padding: 4px;
+    margin: 0;
+    transition: none;
+}
+
+body.fullscreen .video-controller{
+    position: fixed;
+    left: 0;
+    top: 100px;
+    width: 30px;
+    opacity: 0.5;
+    transition: 0.2s;
+}
+
+body.fullscreen .video-controller:hover{
+    opacity: 1;
+}
+
+body.fullscreen .video-controller .btn{
+    width: 100%;
+    padding: 4px;
+    height: 30px;
+    margin: 0;
+}
+
+.btn-bg{
+    width: 80%;
+    height: 80%;
+    margin: 0 auto;
+    transition: 0.2s;
+}
+.video-controller .btn:hover .btn-bg{
+    filter: brightness(1000%) grayscale(1);
+}
+
+.pause-bg{
+    background-image: url('../icon/pause.svg');
+}
+.play-bg{
+    background-image: url('../icon/play.svg');
+}
+.stop-bg{
+    background-image: url('../icon/stop.svg');
+}
+.exit-fullscreen-bg{
+    background-image: url('../icon/exit-fullscreen.svg');
+}
+.enter-fullscreen-bg{
+    background-image: url('../icon/enter-fullscreen.svg');
+}
+
+.progress, .progress-bar{
+    height: 6px;
+    transition: 0.2s;
+}
+
+.pointer:hover{
+    cursor: pointer;
+}
+
+.progress:hover, .progress:hover .progress-bar{
+    height: 16px;
+}
+
+.progress-bar{
+    user-select: none;
+}
+
+body.fullscreen .progress{
+    position: fixed;
+    bottom: 0;
+    width: 90%;
+    left: 5%;
+}
+
+.toastify{
+    background: none;
+}
+
+.extant-time{
+    font-size: 15px;
+}
+
+body.fullscreen .extant-time{
+    position: fixed;
+    bottom: 20px;
+    left: 16px;
+    transition: 0.2s;
+    opacity: 0.5;
+}
+
+body.fullscreen .extant-time:hover{
+    opacity: 1;
+    transform: scale(1.3,1.3);
+    cursor: none;
+}
+
+body.fullscreen .count-clients{
+    position: fixed;
+    top: 0;
+    right: 20px;
+}
+
+.nav{
+    top: 0;
+    left: 0;
+    z-index: 4;
+}
