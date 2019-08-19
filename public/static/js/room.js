@@ -1,14 +1,14 @@
 /**
  * ABOUT HTML5 video player
- * it has a currentTime propery that exists when the video exists
- * the currentTime property is a Interger that shows how many seonds
- * has spended from the first of the video
- * 
+ * it has a currentTime property that exists when the video exists
+ * the currentTime property is a Interger that shows how many seconds
+ * has spent from first of the video
  * e.g: currentTime: 100 => currentTime: 1:40'
  */
 
 const fullUrl = window.location.href
 let socket = io.connect(fullUrl)
+let uploader = new SocketIOFileUpload(socket);
 
 let room = new Vue({
     el: '#app',
@@ -20,6 +20,7 @@ let room = new Vue({
         username: '',
         is_admin: false,
         is_offline: false,
+        is_muted: true,
 
         // video data
         is_play: false,
@@ -51,7 +52,19 @@ let room = new Vue({
             socket.emit('set_username', { username: this.username })
         },
 
+        toggle_mute() {
+            this.is_muted = !this.is_muted
+        },
+
         // --- admin functions ---
+        submit_video() {
+            file_input = this.$refs['file_input']
+
+            let files = file_input.files
+
+            uploader.submitFiles(files)
+        },
+
         set_play() {
             this.send_play_state(!this.is_play)
         },
@@ -74,24 +87,33 @@ let room = new Vue({
         },
 
         set_fullscreen() {
-            // toggle is_fullscreen
-            this.is_fullscreen = !this.is_fullscreen
+            socket.emit('set_fullscreen', { condition: !this.is_fullscreen })
+        },
 
-            socket.emit('set_fullscreen', { condition: this.is_fullscreen })
+
+        // @param time: per second, can be + or -
+        skip(time) {
+            let currentTime = this.$refs.video_player.currentTime
+
+            this.set_video_time(currentTime + time)
         },
 
         logout() {
             // remove saved username from localStorage
             localStorage.removeItem('username')
+
+            // refresh the page
+            socket.on('can_leave', data => {
+                window.location.reload()
+            })
+
             // send leave message to the server
             socket.emit('leave')
 
-            // refresh the page
-            setTimeout(() => document.location.reload(), 300)
         },
 
         timeUpdate() {
-            // update size of progess-bar
+            // update size of progress-bar
             let currentTime = this.$refs['video_player'].currentTime
             let duration = this.videoDuration()
 
@@ -102,7 +124,7 @@ let room = new Vue({
         },
 
         surfOnVideo(event) {
-            // admin required checler
+            // admin required checker
             if (!this.is_admin) return
 
             let fullWidth = this.$refs['progress'].clientWidth
@@ -112,11 +134,11 @@ let room = new Vue({
         },
 
 
-        playPauseVideoPlayer(fisrtPlay = false) {
+        playPauseVideoPlayer(firstPlay = false) {
             let video_player = this.$refs['video_player']
 
-            // wait for initalize video player & check video is ready to play 
-            // readyState = 4: have enought buffering to play video
+            // wait for initialize video player & check video is ready to play
+            // readyState = 4: have enough buffering to play video
             if (video_player === undefined || video_player.readyState !== 4) {
 
                 if (this.savedTime != 0) {
@@ -132,11 +154,10 @@ let room = new Vue({
             }
 
             // if video wants to play for first time after video source changed
-            if (fisrtPlay) {
+            if (firstPlay) {
                 video_player.currentTime = this.additionalTime
                 this.additionalTime = 0
-            }
-            else {
+            } else {
                 video_player.currentTime += this.additionalTime
             }
 
@@ -183,15 +204,17 @@ let room = new Vue({
         },
 
         setVideoSrc() {
-            this.video_src = this.nameSuggestion[this.selectedIndex]
-            this.selectedIndex = 0
-            this.nameSuggestion = []
+            // if suggestion list is not empty
+            if (this.nameSuggestion.length) {
+                this.video_src = this.nameSuggestion[this.selectedIndex]
+                this.selectedIndex = 0
+                this.nameSuggestion = []
+            }
         }
     },
 
     watch: {
         is_play() {
-            let video_player = this.$refs['video_player']
             this.playPauseVideoPlayer()
         },
 
@@ -233,9 +256,7 @@ let room = new Vue({
 
                 // go to next slide
                 this.slide++
-            }
-
-            else notify('data is not correct', 'bg-danger')
+            } else notify('data is not correct', 'bg-danger')
 
         })
 
@@ -280,8 +301,7 @@ let room = new Vue({
         })
 
         socket.on('change_video_time', data => {
-            this.timeUpdate()
-
+            // this.timeUpdate()
             video_player = this.$refs['video_player']
             video_player.currentTime = data.currentTime
         })

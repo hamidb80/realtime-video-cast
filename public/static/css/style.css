@@ -68,6 +68,7 @@ body.fullscreen .video-controller .btn{
     height: 80%;
     margin: 0 auto;
     transition: 0.2s;
+    background-size: 100%;
 }
 .video-controller .btn:hover .btn-bg{
     filter: brightness(1000%) grayscale(1);
@@ -87,6 +88,21 @@ body.fullscreen .video-controller .btn{
 }
 .enter-fullscreen-bg{
     background-image: url('../icon/enter-fullscreen.svg');
+}
+
+.fast-forward-bg{
+    background-image: url('../icon/fast-forward.svg');
+}
+.fast-backward-bg{
+    background-image: url('../icon/fast-backward.svg');
+}
+
+.volume-on-bg{
+    background-image: url('../icon/volume-on.svg');
+}
+
+.volume-off-bg{
+    background-image: url('../icon/volume-off.svg');
 }
 
 .progress, .progress-bar{

@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<!-- TODO: add icon license -->
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>realtime video cast</title>
+    <title>real time video cast</title>
 
     <script src="static/js/socket.io.js"></script>
+    <script src="/siofu/client.js"></script>
     <script src="static/js/vue.js"></script>
     <script src="static/js/toastify.js"></script>
 
@@ -30,7 +33,7 @@
 
             <!-- register form -->
             <div class="card-body" v-if="slide == 0">
-                <h4 class="card-title text-primary">Register form</h4>
+                <h4 class="card-title text-primary">register form</h4>
 
                 <form class="form-group" @submit.prevent="send_username">
                     <label>enter the user name:</label>
@@ -50,22 +53,22 @@
                 </div>
 
                 <div id="video_container">
-                    <video id="video_player" :src="video_src" preload="auto" class="w-100" ref="video_player"
-                        @timeupdate="timeUpdate" @ended="set_zero">
+                    <video id="video_player" :src="video_src" preload="auto" class="w-100 rounded" ref="video_player"
+                        @timeupdate="timeUpdate" @ended="set_zero" :muted="is_muted">
                     </video>
 
-                    <div class="progress pointer" @click="surfOnVideo" ref="progress">
-                        <div class="progress-bar progress-bar-striped bg-warning" ref="progress_bar">
+                    <div class="progress pointer rounded" @click="surfOnVideo" ref="progress">
+                        <div class="progress-bar progress-bar-striped bg-warning rounded" ref="progress_bar">
                         </div>
                     </div>
 
-                    <div class="extant-time badge badge-warning">
+                    <div class="extant-time badge badge-warning mt-1">
                         [[ clockify(extantTime) ]]
                     </div>
                 </div>
 
-
-                <div class="form-group" v-if="is_admin">
+                <!-- TODO: blur after select video url -->
+                <div class="form-group mt-2" v-if="is_admin">
                     <label>enter the url of the video:</label>
                     <input type="text" class="form-control fs-medium" placeholder="url" v-model="video_src"
                         @blur="set_video_src" @keyup.up="changeSelectedIndex(-1)" @keyup.down="changeSelectedIndex(+1)"
@@ -73,14 +76,11 @@
                 </div>
 
                 <div v-if="is_admin && nameSuggestion.length && !is_fullscreen" class="mb-3">
-                    <span> files in the ./public/ directory: </span>
+                    <span> [[ nameSuggestion.length ]] files found in the ./public/ directory: </span>
                     <ul class="list-group">
                         <div v-for="(name, index) in nameSuggestion">
-                            <li v-if="selectedIndex == index"
-                                class="list-group-item d-flex justify-content-between align-items-center active">
-                                [[ name ]]
-                            </li>
-                            <li v-else class="list-group-item d-flex justify-content-between align-items-center">
+                            <li class="list-group-item d-flex justify-content-between align-items-center"
+                                :class="{'active': selectedIndex == index}">
                                 [[ name ]]
                             </li>
                         </div>
@@ -88,27 +88,43 @@
                 </div>
 
                 <!-- for ADMINs -->
-                <div v-if="is_admin" class="action-btns">
+                <div class="action-btns mt-1">
 
-                    <div class="video-controller">
-                        <button class="btn btn-outline-primary" @click="set_play">
-
+                    <div class="video-controller rounded">
+                        <button v-show="is_admin" class="btn btn-outline-primary" @click="set_play">
                             <div v-if="!is_play" class="btn-bg play-bg"></div>
                             <div v-else class="btn-bg pause-bg"></div>
-
                         </button>
 
-                        <button class="btn btn-outline-danger" @click="set_zero">
+                        <button v-show="is_admin" class="btn btn-outline-danger" @click="set_zero">
                             <div class="btn-bg stop-bg"></div>
                         </button>
 
-                        <button class="btn btn-outline-success" @click="set_fullscreen">
+                        <button v-show="is_admin" class="btn btn-outline-success" @click="set_fullscreen">
                             <div v-if="is_fullscreen" class="btn-bg exit-fullscreen-bg"></div>
                             <div v-else class="btn-bg enter-fullscreen-bg"></div>
+                        </button>
+
+                        <button v-show="is_admin" class="btn btn-outline-warning" @click="skip(-10)">
+                            <div class="btn-bg fast-backward-bg"></div>
+                        </button>
+
+                        <button v-show="is_admin" class="btn btn-outline-warning" @click="skip(+10)">
+                            <div class="btn-bg fast-forward-bg"></div>
+                        </button>
+
+                        <button class="btn btn-outline-info" @click="toggle_mute">
+                            <div v-if="!is_muted" class="btn-bg volume-on-bg"></div>
+                            <div v-else class="btn-bg volume-off-bg"></div>
                         </button>
                     </div>
 
                 </div>
+
+                <form v-if="is_admin  && !is_fullscreen" @submit.prevent="submit_video">
+                    <input id="upload-input" ref="file_input" type="file" name="upload">
+                    <input type="submit" value="submit" class="btn btn-primary">
+                </form>
 
                 <!-- show clients -->
                 <div v-if="is_admin" class="my-3 client-list">
@@ -129,11 +145,9 @@
                         </li>
 
                         <li class="list-inline-item my-1 count-clients">
-
                             <span class="badge badge-info fs-medium">
                                 [[ onlineClients ]]
                             </span>
-
                         </li>
                     </ul>
 
@@ -141,8 +155,8 @@
 
                 <!-- show clients -->
                 <a v-if="!is_admin && !is_fullscreen && video_src" :href="video_src" target="blank"
-                class="my-3 d-block btn btn-success text-white">
-                    donwload the video file
+                    class="my-3 d-block btn btn-success text-white">
+                    download the video file
                 </a>
 
 
@@ -153,5 +167,4 @@
     </div>
 </body>
 <script src="static/js/room.js"></script>
-
 </html>
