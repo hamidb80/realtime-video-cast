@@ -1,7 +1,7 @@
 export class Timer {
-    time: number;
-    startTime: Date;
-    is_run: boolean;
+    time: number
+    startTime: Date
+    is_run: boolean
 
     constructor(autoStart = false) {
         this.time = 0
@@ -14,9 +14,10 @@ export class Timer {
 
     reset() {
         this.time = 0
+        this.is_run = false
     }
 
-    set(currentTime: number) {
+    setTime(currentTime: number) {
         this.time = currentTime
 
         if (this.is_run) this.start()
@@ -28,10 +29,8 @@ export class Timer {
     }
 
     stop(endTime = new Date()) {
-        if (!this.is_run) {
-            console.log('start time is not defined', this.time)
-            return
-        }
+        // if the timer is stopped
+        if (!this.is_run) return
 
         this.time += (endTime.getTime() - this.startTime.getTime()) / 1000
         this.is_run = false
@@ -41,9 +40,9 @@ export class Timer {
         let nowTime = new Date(),
             deltaTime = 0
 
-        if (this.is_run) {
+        if (this.is_run)
             deltaTime += (nowTime.getTime() - this.startTime.getTime()) / 1000
-        }
+
 
         return this.time + deltaTime
     }

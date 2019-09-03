@@ -38,18 +38,24 @@ let room = new Vue({
         slide: 0,
         clients: [],
 
-        video_names: []
+        video_names: [],
+
+        waitForUpload: false
     },
 
     computed: {
         onlineClients() {
             return this.clients.filter(client => client.is_online).length
+        },
+
+        video_src_url() {
+            return 'media/' + this.video_src
         }
     },
 
     methods: {
         send_username() {
-            socket.emit('set_username', { username: this.username })
+            socket.emit('login', { username: this.username })
         },
 
         toggle_mute() {
@@ -63,6 +69,8 @@ let room = new Vue({
             let files = file_input.files
 
             uploader.submitFiles(files)
+
+            this.waitForUpload = true
         },
 
         set_play() {
@@ -191,7 +199,7 @@ let room = new Vue({
             fetch(`${fullUrl}videos?name=${this.video_src}`)
                 .then(res => res.json())
                 .then(res => {
-                    this.nameSuggestion = res['matchedNames']
+                    this.nameSuggestion = res['file_names']
                 })
         },
 
@@ -300,8 +308,18 @@ let room = new Vue({
 
         })
 
+
+        socket.on('upload_event', (data) => {
+            if (data['success'] === true)
+                notify('file uploaded successfully!', 'bg-success')
+
+            else
+                notify('file upload failed!', 'bg-danger')
+
+            this.waitForUpload = false
+        })
+
         socket.on('change_video_time', data => {
-            // this.timeUpdate()
             video_player = this.$refs['video_player']
             video_player.currentTime = data.currentTime
         })

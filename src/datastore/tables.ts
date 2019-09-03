@@ -1,13 +1,14 @@
-import { Model, User } from './models';
-import { anyStringVal as Delimiters } from "./utils";
+import {
+    Model, User, Room,
+    RoomProperties as RP, UserProperties as UP
+} from './models'
+import { anyStringVal as Delimiters } from "../utils/util"
 
-export class DataStore<T extends Model> {
-    data: Array<T>;
-    sortBy: string;
+class Table<T extends Model> {
+    data: Array<T>
 
-    constructor(sortBy = '', data = Array<T>()) {
+    constructor(data = Array<T>()) {
         this.data = [...data]
-        this.sortBy = sortBy
     }
 
     insert(row: T) {
@@ -40,10 +41,11 @@ export class DataStore<T extends Model> {
         return rows[0]
     }
 
-    find(delimiters: Delimiters) {
-        if (this.sortBy)
-            this.sort()
+    all() {
+        return this.find({})
+    }
 
+    find(delimiters: Delimiters) {
         return this.data.filter(row => this.filter(row, delimiters))
     }
 
@@ -64,7 +66,7 @@ export class DataStore<T extends Model> {
         this.data = this.data.filter(row => !this.filter(row, delimiters))
     }
 
-    sort(propertyName = this.sortBy) {
+    sort(propertyName: string) {
         this.data = this.data.sort((a: T, b: T) => {
             let a_val = a.get(propertyName),
                 b_val = b.get(propertyName)
@@ -80,3 +82,36 @@ export class DataStore<T extends Model> {
     }
 }
 
+
+import { Socket } from "socket.io"
+class Clients extends Table<User>{
+    getAdmin(): User {
+        return this.get({ [UP.username]: 'admin', [UP.is_online]: true })
+    }
+
+    getBySocketId(socket_id: string): User {
+        return this.get({ [UP.socket_id]: socket_id })
+    }
+
+    insertOrUpdate = (username: string, socket: Socket) => {
+
+        try {
+            const client = this.get({ [UP.username]: username })
+
+            client.multiSet({
+                [UP.socket]: socket,
+                [UP.is_online]: true
+            })
+        } catch {
+            clients.insert(new User(
+                username, socket, true
+            ))
+        }
+    }
+}
+
+
+const clients = new Clients()
+const mainRoom = new Room('room1')
+
+export { Table, clients, mainRoom }

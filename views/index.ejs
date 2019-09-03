@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<!-- TODO: add icon license -->
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -53,8 +51,8 @@
                 </div>
 
                 <div id="video_container">
-                    <video id="video_player" :src="video_src" preload="auto" class="w-100 rounded" ref="video_player"
-                        @timeupdate="timeUpdate" @ended="set_zero" :muted="is_muted">
+                    <video id="video_player" :src="video_src_url" preload="auto" class="w-100 rounded"
+                        ref="video_player" @timeupdate="timeUpdate" @ended="set_zero" :muted="is_muted">
                     </video>
 
                     <div class="progress pointer rounded" @click="surfOnVideo" ref="progress">
@@ -67,7 +65,6 @@
                     </div>
                 </div>
 
-                <!-- TODO: blur after select video url -->
                 <div class="form-group mt-2" v-if="is_admin">
                     <label>enter the url of the video:</label>
                     <input type="text" class="form-control fs-medium" placeholder="url" v-model="video_src"
@@ -121,7 +118,9 @@
 
                 </div>
 
-                <form v-if="is_admin  && !is_fullscreen" @submit.prevent="submit_video">
+                <!-- video uploader -->
+                <form v-if="is_admin  && !is_fullscreen" @submit.prevent="submit_video" class="mt-3"
+                    :class="{'opacity-50': waitForUpload}">
                     <input id="upload-input" ref="file_input" type="file" name="upload">
                     <input type="submit" value="submit" class="btn btn-primary">
                 </form>
@@ -167,4 +166,5 @@
     </div>
 </body>
 <script src="static/js/room.js"></script>
+
 </html>
