@@ -66,7 +66,7 @@ class User extends Model {
     }
 
     emit(eventName: string, data = {}) {
-        if (this.data[UP.socket]) {
+        if (this.data[UP.is_online]) {
             this.data[UP.socket].emit(eventName, data)
         }
         else throw Error('the socket is offline')
