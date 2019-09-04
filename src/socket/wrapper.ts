@@ -7,7 +7,7 @@ import {
 import { clients } from "../datastore/tables"
 import { UserProperties as UP } from "../datastore/models";
 
-function adminRequired(socket: any, func: Function, data: object) {
+function adminRequired(socket: Socket, func: (data: object) => {}, data: object) {
     try {
         const admin = clients.getAdmin()
 
