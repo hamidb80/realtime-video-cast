@@ -105,6 +105,10 @@ body.fullscreen .video-controller .btn{
     background-image: url('../icon/volume-off.svg');
 }
 
+.download-bg{
+    background-image: url('../icon/download.svg');
+}
+
 .progress, .progress-bar{
     height: 6px;
     transition: 0.2s;

@@ -114,6 +114,10 @@
                             <div v-if="!is_muted" class="btn-bg volume-on-bg"></div>
                             <div v-else class="btn-bg volume-off-bg"></div>
                         </button>
+
+                        <a class="btn btn-outline-primary" :href="video_src">
+                            <div v-if="" class="btn-bg download-bg"></div>
+                        </a>
                     </div>
 
                 </div>
@@ -151,13 +155,6 @@
                     </ul>
 
                 </div>
-
-                <!-- show clients -->
-                <a v-if="!is_admin && !is_fullscreen && video_src" :href="video_src" target="blank"
-                    class="my-3 d-block btn btn-success text-white">
-                    download the video file
-                </a>
-
 
             </div>
         </div>
