@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { MEDIA_PATH } from "./config";
+import { MEDIA_PATH } from "./config"
 import path from "path"
 import fs from "fs"
 

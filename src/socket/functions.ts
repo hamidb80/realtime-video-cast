@@ -2,7 +2,7 @@ import { clients } from "../datastore/tables"
 import { User, UserProperties as UP } from "../datastore/models"
 
 import { uploader } from "../app"
-import { MEDIA_PATH } from "../config";
+import { MEDIA_PATH } from "../config"
 import { Socket } from 'socket.io'
 import path from 'path'
 
