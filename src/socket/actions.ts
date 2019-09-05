@@ -5,7 +5,7 @@ import { ADMIN } from "../config"
 
 
 import {
-    sendUsersToAdmin, userEvent,
+    sendUsersToAdmin, userEventEcho,
     initSocketUploader
 } from "./functions"
 
@@ -43,7 +43,7 @@ const
             socket.emit('data', room.asJson())
 
             const client = clients.getBySocketId(socket.id)
-            userEvent('connected', client)
+            userEventEcho('connected', client)
             sendUsersToAdmin()
         }
     },
@@ -53,7 +53,7 @@ const
             let client = clients.getBySocketId(socket.id)
 
             clients.update({ [UP.socket_id]: socket.id }, { [UP.is_online]: false })
-            userEvent('disconnected', client)
+            userEventEcho('disconnected', client)
 
         } catch  { }
     },
@@ -62,7 +62,7 @@ const
             const client = clients.getBySocketId(socket.id)
 
             clients.remove({ [UP.socket_id]: socket.id })
-            userEvent('left', client)
+            userEventEcho('left', client)
 
             socket.emit('can_leave')
         } catch  { }
@@ -72,9 +72,6 @@ const
 const
     setPlay = (data: { condition: boolean }) => {
         room.set(RP.isPlay, data.condition)
-
-        let roomName = room.get(RP.name)
-
         room.emit('change_play', data)
 
         if (data.condition)

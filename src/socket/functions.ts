@@ -2,9 +2,7 @@ import { clients } from "../datastore/tables"
 import { User, UserProperties as UP } from "../datastore/models"
 
 import { uploader } from "../app"
-import { MEDIA_PATH } from "../config"
 import { Socket } from 'socket.io'
-import path from 'path'
 
 const
     sendToAdmin = (eventName: string, data: object) => {
@@ -15,6 +13,8 @@ const
     },
 
     sendUsersToAdmin = () => {
+        clients.sort(UP.username)
+
         const data = clients.all().map((row: User) =>
             Object({
                 [UP.username]: row.get(UP.username),
@@ -25,7 +25,7 @@ const
         sendToAdmin('get_users', { 'clients': data })
     },
 
-    userEvent = (actionName: string, user: User) => {
+    userEventEcho = (actionName: string, user: User) => {
         let data = {
             'username': user.get(UP.username),
             'action': actionName,
@@ -38,7 +38,6 @@ const
     initSocketUploader = (socket: Socket) => {
         uploader.listen(socket)
 
-        // TODO: add this to the client
         uploader.on("saved", (event: any) => {
             socket.emit('upload_event', { 'success': true })
         })
@@ -49,4 +48,4 @@ const
     }
 
 
-export { sendToAdmin, sendUsersToAdmin, userEvent, initSocketUploader }
+export { sendToAdmin, sendUsersToAdmin, userEventEcho, initSocketUploader }
