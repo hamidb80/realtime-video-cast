@@ -1,7 +1,7 @@
 /**
  * ABOUT HTML5 video player
  * it has a currentTime property that exists when the video exists
- * the currentTime property is a Interger that shows how many seconds
+ * the currentTime property is a Integer that shows how many seconds
  * has spent from first of the video
  * e.g: currentTime: 100 => currentTime: 1:40'
  */
@@ -23,7 +23,7 @@ let room = new Vue({
         is_muted: true,
 
         // video data
-        is_play: false,
+        is_play: null,
         is_fullscreen: false,
 
         additionalTime: 0,
@@ -90,6 +90,11 @@ let room = new Vue({
             this.set_video_time(0)
         },
 
+        ended() {
+            this.set_zero()
+            this.is_play = false
+        },
+
         set_video_src() {
             socket.emit('set_video_src', { src: this.video_src })
         },
@@ -142,32 +147,34 @@ let room = new Vue({
         },
 
 
-        playPauseVideoPlayer(firstPlay = false) {
+        playPauseVideoPlayer() {
             let video_player = this.$refs['video_player']
 
             // wait for initialize video player & check video is ready to play
             // readyState = 4: have enough buffering to play video
             if (video_player === undefined || video_player.readyState !== 4) {
-
-                if (this.savedTime != 0) {
-                    this.additionalTime = this.savedTime
-                    this.savedTime = 0
-                }
-
-                let delay = 500 // per ms
+                const delay = 500 // per ms
                 this.additionalTime += delay / 1000 // ms to sec
 
-                setTimeout(() => this.playPauseVideoPlayer(true), delay)
+                setTimeout(() => this.playPauseVideoPlayer(), delay)
                 return
             }
 
-            // if video wants to play for first time after video source changed
-            if (firstPlay) {
-                video_player.currentTime = this.additionalTime
-                this.additionalTime = 0
-            } else {
+            if (this.additionalTime + this.savedTime >= this.videoDuration()){
+                this.ended()
+            }
+
+            // if wants to play for first time
+            if (this.savedTime){
+                video_player.currentTime = this.savedTime
+                this.savedTime = 0
+            }
+
+            if (this.is_play){
                 video_player.currentTime += this.additionalTime
             }
+
+            this.additionalTime = 0
 
             // change play state
             if (this.is_play)

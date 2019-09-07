@@ -11,6 +11,7 @@
   "author": "hamidb80",
   "license": "ISC",
   "dependencies": {
+    "@types/express": "^4.17.1",
     "@types/node": "^12.6.9",
     "@types/socket.io": "^2.1.2",
     "@types/socket.io-client": "^1.4.32",

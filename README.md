@@ -1,32 +1,31 @@
 # How to install
-
-clone the project inside your computer
-change the port & the admin properties in app.js
+clone the project inside your computer, open terminal (cmd, shell ,...) in the project folder & run these commands
 
 ```
-npm install
-npm install typescript
+npm i --save
+npm i typescript
 tsc
+```
+
+# commands:
+to run:
+```
 npm start
 ```
 
-# Delete all videos:
+to clean the video folder:
 ```
 npm run clean
 ```
 
 
 # How to use
-set admin username & password in the app.js
-choose a port in app.js
-put your videos in public folder and enter the name of the video in admin mode in url input.
-if you want to login as admin, you must enter the username & password of admin inside username input like this pattern: "username:password"
+you can enter in admin mode by type username&password of admin like this pattern 'username:password' in the username input.
 
+you can change the port of the server & admin data (username & password) in the src/config.ts
 
-# New changes:
-fix video buffering or initial checker problem
-add download video button for other clients
-more realtime
+after doing every change, you must run this command to compile .ts to .js ` tsc `
+
 
 # Demo:
 ![](./demo.gif)

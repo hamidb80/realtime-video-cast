@@ -39,6 +39,11 @@
                     <input type="submit" value="submit" class="btn btn-success mt-2">
                 </form>
 
+                <footer class="text-secondary w-100 mt-3">
+                    icons from: <a href="http://flaticon.com">flaticon.com</a> <br>
+                    author: <a href="http://github.com/hamidb80">hamidb80</a>
+                </footer>
+
             </div>
 
             <!-- for users -->
@@ -52,7 +57,7 @@
 
                 <div id="video_container">
                     <video id="video_player" :src="video_src_url" preload="auto" class="w-100 rounded"
-                        ref="video_player" @timeupdate="timeUpdate" @ended="set_zero" :muted="is_muted">
+                        ref="video_player" @timeupdate="timeUpdate" @ended="ended" :muted="is_muted">
                     </video>
 
                     <div class="progress pointer rounded" @click="surfOnVideo" ref="progress">
