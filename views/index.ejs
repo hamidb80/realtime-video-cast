@@ -35,7 +35,7 @@
 
                 <form class="form-group" @submit.prevent="send_username">
                     <label>enter the user name:</label>
-                    <input type="text" class="form-control fs-medium" placeholder="username" v-model="username">
+                    <input type="text" class="form-control fs-medium" placeholder="username/username:pass" v-model="username">
                     <input type="submit" value="submit" class="btn btn-success mt-2">
                 </form>
 
@@ -120,7 +120,7 @@
                             <div v-else class="btn-bg volume-off-bg"></div>
                         </button>
 
-                        <a class="btn btn-outline-primary" :href="video_src">
+                        <a class="btn btn-outline-primary" :href="video_src_url">
                             <div class="btn-bg download-bg"></div>
                         </a>
                     </div>
