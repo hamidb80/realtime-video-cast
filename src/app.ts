@@ -25,6 +25,9 @@ app.use(siofu.router)
 const server = app.listen(PORT)
 const io = SocketIO(server)
 
+// remove limit of sockets
+io.sockets.setMaxListeners(0)
+
 io.on('connection', (socket: Socket) => socketInit(socket))
 
 export { io, uploader }
