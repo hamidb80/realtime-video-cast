@@ -72,13 +72,13 @@
 
                 <div class="form-group mt-2" v-if="is_admin">
                     <label>enter the url of the video:</label>
-                    <input type="text" class="form-control fs-medium" placeholder="url" v-model="video_src"
+                    <input type="text" class="form-control fs-medium" placeholder="video name" v-model="video_src"
                         @blur="set_video_src" @keyup.up="changeSelectedIndex(-1)" @keyup.down="changeSelectedIndex(+1)"
                         @keyup.enter="setVideoSrc" @keyup="getSuggestionFile" :disabled="is_play">
                 </div>
 
                 <div v-if="is_admin && nameSuggestion.length && !is_fullscreen" class="mb-3">
-                    <span> [[ nameSuggestion.length ]] files found in the ./public/ directory: </span>
+                    <span> [[ nameSuggestion.length ]] files found </span>
                     <ul class="list-group">
                         <div v-for="(name, index) in nameSuggestion">
                             <li class="list-group-item d-flex justify-content-between align-items-center"
