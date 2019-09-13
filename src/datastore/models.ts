@@ -84,7 +84,7 @@ enum RoomProperties {
 
 const RP = RoomProperties
 
-import { io } from "../app"
+import { io } from "../server"
 
 class Room extends Model {
     data: {
