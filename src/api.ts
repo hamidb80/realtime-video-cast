@@ -10,7 +10,7 @@ function homePage(req: Request, res: Response) {
 function videoSuggestionApi(req: Request, res: Response) {
     let userEnteredName = req.query['name']
 
-    fs.readdir(path.join(__dirname, MEDIA_PATH), (err: any, fileNames: string[]) => {
+    fs.readdir(MEDIA_PATH, (err: any, fileNames: Array<string>) => {
         // check sub string
         let matchedNames = fileNames.filter((fileName: string) => fileName.includes(userEnteredName))
         // check not full match

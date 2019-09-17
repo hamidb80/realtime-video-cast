@@ -8,5 +8,5 @@ const server = app.listen(PORT)
 const io = SocketIO(server)
 
 export {
-    app, io
+    app as website, io
 }

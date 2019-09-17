@@ -1,3 +1,4 @@
+import path from 'path'
 require('dotenv').config()
 
 const ADMIN = Object.freeze({
@@ -6,7 +7,12 @@ const ADMIN = Object.freeze({
 })
 
 const PORT = process.env.PORT
-const MEDIA_PATH = '../public/media'
-const PUBLIC_PATH = '../public'
 
-export { ADMIN,  PORT, MEDIA_PATH, PUBLIC_PATH}
+const PUBLIC_FOLDER = '../public'
+const MEDIA_FOLDER =  '../public/media'
+
+
+const MEDIA_PATH = path.join(__dirname, MEDIA_FOLDER)
+const PUBLIC_PATH = path.join(__dirname, PUBLIC_FOLDER)
+
+export { ADMIN, PORT, MEDIA_PATH, PUBLIC_PATH }

@@ -4,6 +4,7 @@
   "description": "realtime video cast for local and global networks",
   "main": "./build/app.js",
   "scripts": {
+    "test": "mocha ./build/test/test.js",
     "start": "nodemon ./build/app.js",
     "clean": "node ./build/commands/remove-all-videos.js"
   },
@@ -11,10 +12,13 @@
   "author": "hamidb80",
   "license": "ISC",
   "dependencies": {
+    "@types/chai": "^4.2.2",
     "@types/express": "^4.17.1",
+    "@types/mocha": "^5.2.7",
     "@types/node": "^12.6.9",
     "@types/socket.io": "^2.1.2",
     "@types/socket.io-client": "^1.4.32",
+    "chai": "^4.2.0",
     "dotenv": "^8.0.0",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
