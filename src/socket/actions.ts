@@ -14,7 +14,7 @@ const
     login = (socket: Socket, data: { username: string }) => {
         let username: string = data.username.trim()
 
-        let states = {
+        let loginStates = {
             condition: false,
             is_admin: false
         }
@@ -23,20 +23,21 @@ const
         if (username == `${ADMIN.username}:${ADMIN.password}`) {
             username = 'admin'
 
-            states.is_admin = true
-            states.condition = true
+            loginStates.is_admin = true
+            loginStates.condition = true
 
             initSocketUploader(socket)
         }
 
         // client validation
         else if (username.toLowerCase() != 'admin' && username != '')
-            states.condition = true
+            loginStates.condition = true
 
 
-        socket.emit('validation', states)
+        socket.emit('validation', loginStates)
 
-        if (states.condition) {
+        if (loginStates.condition) {
+            // update if this username exists
             clients.insertOrUpdate(username, socket)
 
             room.addSocket(socket)
@@ -55,6 +56,7 @@ const
             clients.update({ [UP.socket_id]: socket.id }, { [UP.is_online]: false })
             userEventEcho('disconnected', client)
 
+            room.removeSocket(socket)
         } catch  { }
     },
     leave = (socket: Socket) => {

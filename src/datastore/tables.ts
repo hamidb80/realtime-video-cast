@@ -93,15 +93,21 @@ class Clients extends Table<User>{
         return this.get({ [UP.socket_id]: socket_id })
     }
 
-    insertOrUpdate = (username: string, socket: Socket) => {
-
+    insertOrUpdate(username:string, socket: Socket) {
         try {
-            const client = this.get({ [UP.username]: username })
+            const client = clients.get({ [UP.username]: username })
+
+            // disconnect the last socket with this username
+            const lastSocket = client.data[UP.socket]
+            if (lastSocket.connected)
+                lastSocket.disconnect()
+
 
             client.multiSet({
                 [UP.socket]: socket,
                 [UP.is_online]: true
             })
+            // else create a new user
         } catch {
             clients.insert(new User(
                 username, socket, true

@@ -115,6 +115,10 @@ class Room extends Model {
         socket.join(this.data[RP.name])
     }
 
+    removeSocket(socket:Socket){
+        socket.leave(this.data[RP.name])
+    }
+
     asJson() {
         return {
             'video_src': this.data[RP.videoSrc],
